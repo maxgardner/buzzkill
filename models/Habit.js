@@ -5,9 +5,14 @@ module.exports = (mongoose) => {
       type: String,
       required: true
     },
-    created_at: {
-      type: Date,
-      default: Date.now
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }
+  }, {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at'
     }
   });
 

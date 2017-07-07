@@ -19,11 +19,7 @@ module.exports = (mongoose) => {
     password: {
       type: String,
       required: true
-    },
-    habit: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Habit"
-    }]
+    }
   });
 
   let User = mongoose.model('User', UserSchema);

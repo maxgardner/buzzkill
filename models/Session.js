@@ -6,6 +6,11 @@ module.exports = (mongoose) => {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Habit"
     }
+  }, {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at'
+    }
   });
 
   let Session = mongoose.model('Session', SessionSchema);

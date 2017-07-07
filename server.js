@@ -7,7 +7,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 
 // Set up static files and route handling
-app.use(express.static(process.cwd + '/client/build'));
+app.use(express.static(process.cwd + '/client/build/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride('X-HTTP-Method-Override'));
@@ -20,7 +20,7 @@ let Session = require("./models/Session.js")(mongoose);
 
 // Set up mongoDB
 mongoose.Promise = Promise;
-mongoose.connect(require("./config/mongodb").uri);
+mongoose.connect('mongodb://localhost/buzzkill_db');
 const db = mongoose.connection;
 
 // Show any mongoose errors
