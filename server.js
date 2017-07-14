@@ -5,37 +5,31 @@ const port = process.env.PORT || 3001;
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const path = require('path');
+const authCheckMiddleware = require(path.join(__dirname, '/config/auth'));
 
 // Set up static files and route handling
-app.use(express.static(process.cwd + '/client/build/public'));
+app.use(express.static(path.join(__dirname, 'client/build/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(methodOverride('X-Method-Override'));
 
-// Require models for mongoose
-let User = require("./models/User.js")(mongoose);
-let Habit = require("./models/Habit.js")(mongoose);
-let Session = require("./models/Session.js")(mongoose);
-
 // Set up mongoDB
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/buzzkill_db');
-const db = mongoose.connection;
-
-// Show any mongoose errors
-db.on("error", (error) => {
-  console.log("Mongoose Error: ", error);
-});
-
-// Once logged in to the db through mongoose, log a success message
-db.once("open", () => {
-  console.log("Mongoose connection successful.");
-});
+require(path.join(__dirname, 'models'))(mongoose);
+// Require models for mongoose
+let User = require("./models/User")(mongoose);
+let Habit = require("./models/Habit")(mongoose);
+let Session = require("./models/Session")(mongoose);
 
 // Import routes
-require("./routes/client.js")(router);
+app.use('/api', authCheckMiddleware);
+require(path.join(__dirname, 'routes/client'))(router);
+require(path.join(__dirname, 'routes/api'))(router, User, Habit, Session);
+require(path.join(__dirname, 'routes/auth'))(router, User);
 
-app.listen(port, () => {
+app.listen(port, (err) => {
+  if (err) throw err;
   console.log(`Server is running on ${port}`);
 });
